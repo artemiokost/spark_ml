@@ -42,23 +42,24 @@ object Iris {
     println(correlation.toString)
 
     val splits = labeledData.randomSplit(Array(0.8, 0.2), 11L)
-    val testData = splits(0)
-    val trainingData = splits(1)
+    val trainingData = splits(0)
+    val testData = splits(1)
 
     val model = new LogisticRegressionWithLBFGS()
-      .setNumClasses(3)
+      .setNumClasses(labelMap.size)
       .run(trainingData)
 
     val predictionAndLabels = testData.map(p => (model.predict(p.features), p.label))
     val metrics = new MulticlassMetrics(predictionAndLabels)
     val accuracy = metrics.accuracy
-    System.out.println("Model Accuracy on Test Data: " + accuracy)
+    println("Model Accuracy on Test Data: " + accuracy)
 
     // Save and evaluate on random data
     model.save(sc, "model/logistic-regression")
-    val sameModel = LogisticRegressionModel.load(sc, "model/logistic-regression")
+    
+    val nativeModel = LogisticRegressionModel.load(sc, "model/logistic-regression")
     val newData = Vectors.dense(Array[Double](1, 1, 1, 1))
-    val prediction = sameModel.predict(newData)
-    System.out.println("Model Prediction on New Data = " + prediction)
+    val prediction = nativeModel.predict(newData)
+    println("Model Prediction on New Data = " + prediction)
   }
 }
