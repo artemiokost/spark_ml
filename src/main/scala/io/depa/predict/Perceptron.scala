@@ -37,8 +37,7 @@ object Perceptron {
     // compute accuracy on the test set
     val result = model.transform(test)
     val predictionAndLabels = result.select("prediction", "label")
-    val evaluator = new MulticlassClassificationEvaluator()
-      .setMetricName("accuracy")
+    val evaluator = new MulticlassClassificationEvaluator().setMetricName("accuracy")
 
     println(s"Test set accuracy = ${evaluator.evaluate(predictionAndLabels)}")
   }

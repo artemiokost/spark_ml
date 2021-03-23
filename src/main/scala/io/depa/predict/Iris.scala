@@ -8,26 +8,36 @@ import org.apache.spark.mllib.stat.Statistics
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
+import java.util.Scanner
+
 object Iris {
 
   def main(args: Array[String]) {
 
-    val sc = SparkContext.getOrCreate(new SparkConf().setAppName("Main").setMaster("local[2]"))
+    val conf = new SparkConf()
+      .setAppName("Main").setMaster("spark://127.0.0.1:7077")
+      .set("spark.dynamicAllocation.enabled", "false")
+      .set("spark.shuffle.service.enabled", "false")
+
+    val sc = SparkContext.getOrCreate(conf)
 
     val data: RDD[String] = sc.textFile("data/mllib/iris_dataset.csv")
 
-    val inputData = data.map(_.split(","))
+    val inputData = data
+      .map(_.split(","))
       .map(arr => arr.slice(0, arr.length - 1))
       .map(for (e <- _) yield e.toDouble)
       .map(Vectors.dense)
 
     val labelMap = Map("setosa" -> 0, "versicolor" -> 1, "virginica" -> 2)
 
-    val labeledData = data.map(_.split(",")).map(arr => {
-      val label = arr(arr.length - 1)
-      val vector = Vectors.dense(for (e <- arr.slice(0, arr.length - 1)) yield e.toDouble)
-      LabeledPoint(labelMap(label), vector)
-    })
+    val labeledData = data
+      .map(_.split(","))
+      .map(arr => {
+        val label = arr(arr.length - 1)
+        val vector = Vectors.dense(for (e <- arr.slice(0, arr.length - 1)) yield e.toDouble)
+        LabeledPoint(labelMap(label), vector)
+      })
 
     val summary = Statistics.colStats(inputData)
     println("Summary Mean:")
@@ -54,12 +64,20 @@ object Iris {
     val accuracy = metrics.accuracy
     println("Model Accuracy on Test Data: " + accuracy)
 
-    // Save and evaluate on random data
-    model.save(sc, "model/logistic-regression")
-    
-    val nativeModel = LogisticRegressionModel.load(sc, "model/logistic-regression")
-    val newData = Vectors.dense(Array[Double](1, 1, 1, 1))
-    val prediction = nativeModel.predict(newData)
-    println("Model Prediction on New Data = " + prediction)
+//    // Save and evaluate on random data
+//    model.save(sc, "model/logistic-regression")
+//
+//    val nativeModel = LogisticRegressionModel.load(sc, "model/logistic-regression")
+//    val newData = Vectors.dense(Array[Double](1, 1, 1, 1))
+//    val prediction = nativeModel.predict(newData)
+//    println("Model Prediction on New Data = " + prediction)
+
+    var isRunning = true
+    val scanner = new Scanner(System.in)
+
+    while (isRunning) {
+      val line = scanner.nextLine()
+      if (line.trim().toLowerCase() == "vpizdu") isRunning = false
+    }
   }
 }
