@@ -1,4 +1,4 @@
-package io.depa.predict
+package io.predict
 
 import org.apache.spark.ml.classification.MultilayerPerceptronClassifier
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator

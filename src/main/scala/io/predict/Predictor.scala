@@ -1,4 +1,4 @@
-package io.depa.predict
+package io.predict
 
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.{GBTClassificationModel, GBTClassifier}
