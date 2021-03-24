@@ -77,7 +77,7 @@ object Iris {
 
     while (isRunning) {
       val line = scanner.nextLine()
-      if (line.trim().toLowerCase() == "vpizdu") isRunning = false
+      if (line.trim().toLowerCase() == "goodbye") isRunning = false
     }
   }
 }
